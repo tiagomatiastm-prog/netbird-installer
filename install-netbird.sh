@@ -344,8 +344,6 @@ chmod 600 "${CONFIG_DIR}/management.json"
 # Create docker-compose.yml
 print_info "Creating Docker Compose configuration..."
 cat > "${INSTALL_DIR}/docker-compose.yml" << 'EOFCOMPOSE'
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -401,11 +399,6 @@ services:
       - "--log-level=info"
       - "--disable-anonymous-metrics=true"
       - "--single-account-mode-domain=${NETBIRD_DOMAIN}"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:${HTTP_PORT}/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   # Signal Server
   signal:
