@@ -291,8 +291,6 @@ services:
       - "${LISTEN_ADDRESS}:${HTTP_PORT}:${HTTP_PORT}"
     networks:
       - netbird-network
-    command: >
-      sh -c "netbird-mgmt management --port ${HTTP_PORT} --log-level info --disable-anonymous-metrics"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:${HTTP_PORT}/api/health"]
       interval: 30s
@@ -311,8 +309,6 @@ services:
       - "${LISTEN_ADDRESS}:${SIGNAL_PORT}:${SIGNAL_PORT}"
     networks:
       - netbird-network
-    command: >
-      sh -c "netbird-signal run --port ${SIGNAL_PORT} --log-level info"
 
   # Dashboard (Web UI)
   dashboard:
