@@ -1,0 +1,30 @@
+# Sensitive files
+*.txt
+*.log
+.env
+*.key
+*.pem
+*.crt
+
+# Backup files
+*.tar.gz
+*.zip
+*.bak
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Test data
+test-data/
+local-test/
