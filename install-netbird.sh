@@ -239,6 +239,108 @@ EOF
 
 chmod 600 "${CONFIG_DIR}/.env"
 
+# Create management.json configuration file
+print_info "Creating management server configuration..."
+cat > "${CONFIG_DIR}/management.json" << EOF
+{
+  "Stuns": [
+    {
+      "Proto": "udp",
+      "URI": "stun:${TURN_EXTERNAL_IP}:${RELAY_PORT}",
+      "Username": "",
+      "Password": null
+    }
+  ],
+  "TURNConfig": {
+    "Turns": [
+      {
+        "Proto": "udp",
+        "URI": "turn:${TURN_EXTERNAL_IP}:${RELAY_PORT}",
+        "Username": "netbird",
+        "Password": "${TURN_PASSWORD}"
+      }
+    ],
+    "CredentialsTTL": "12h",
+    "Secret": "${TURN_PASSWORD}",
+    "TimeBasedCredentials": false
+  },
+  "Relay": {
+    "Addresses": [],
+    "CredentialsTTL": "24h",
+    "Secret": "${TURN_PASSWORD}"
+  },
+  "Signal": {
+    "Proto": "http",
+    "URI": "${NETBIRD_SIGNAL_ENDPOINT}",
+    "Username": "",
+    "Password": null
+  },
+  "ReverseProxy": {
+    "TrustedHTTPProxies": [],
+    "TrustedHTTPProxiesCount": 0,
+    "TrustedPeers": ["0.0.0.0/0"]
+  },
+  "Datadir": "/var/lib/netbird",
+  "DataStoreEncryptionKey": "${JWT_SECRET}",
+  "StoreConfig": {
+    "Engine": "postgres"
+  },
+  "HttpConfig": {
+    "Address": "0.0.0.0:${HTTP_PORT}",
+    "AuthAudience": "${DOMAIN}",
+    "AuthIssuer": "${NETBIRD_MGMT_API_ENDPOINT}",
+    "AuthKeysLocation": "",
+    "OIDCConfigEndpoint": "",
+    "IdpSignKeyRefreshEnabled": false,
+    "CertFile": "",
+    "CertKey": "",
+    "AuthUserIDClaim": ""
+  },
+  "IdpManagerConfig": {
+    "ManagerType": "none",
+    "ClientConfig": {
+      "Issuer": "",
+      "TokenEndpoint": "",
+      "ClientID": "",
+      "ClientSecret": "",
+      "GrantType": ""
+    },
+    "ExtraConfig": null,
+    "Auth0ClientCredentials": null,
+    "AzureClientCredentials": null,
+    "KeycloakClientCredentials": null,
+    "ZitadelClientCredentials": null
+  },
+  "DeviceAuthorizationFlow": {
+    "Provider": "none",
+    "ProviderConfig": {
+      "Audience": "",
+      "ClientID": "",
+      "ClientSecret": "",
+      "TokenEndpoint": "",
+      "DeviceAuthEndpoint": "",
+      "AuthorizationEndpoint": "",
+      "Scope": "",
+      "UseIDToken": false
+    }
+  },
+  "PKCEAuthorizationFlow": {
+    "ProviderConfig": {
+      "Audience": "",
+      "ClientID": "",
+      "ClientSecret": "",
+      "TokenEndpoint": "",
+      "AuthorizationEndpoint": "",
+      "Scope": "",
+      "RedirectURLs": [],
+      "UseIDToken": false
+    }
+  }
+}
+EOF
+
+chmod 600 "${CONFIG_DIR}/management.json"
+
 # Create docker-compose.yml
 print_info "Creating Docker Compose configuration..."
 cat > "${INSTALL_DIR}/docker-compose.yml" << 'EOFCOMPOSE'
@@ -287,10 +389,18 @@ services:
       NETBIRD_SIGNAL_GRPC_LISTEN_ADDR: 0.0.0.0:10000
     volumes:
       - ./data/management:/var/lib/netbird
+      - ./config/management.json:/etc/netbird/management.json:ro
     ports:
       - "${LISTEN_ADDRESS}:${HTTP_PORT}:${HTTP_PORT}"
     networks:
       - netbird-network
+    command:
+      - "management"
+      - "--port=${HTTP_PORT}"
+      - "--log-file=console"
+      - "--log-level=info"
+      - "--disable-anonymous-metrics=true"
+      - "--single-account-mode-domain=${NETBIRD_DOMAIN}"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:${HTTP_PORT}/api/health"]
       interval: 30s
