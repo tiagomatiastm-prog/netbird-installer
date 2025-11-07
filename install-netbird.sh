@@ -186,6 +186,8 @@ DB_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
 JWT_SECRET=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
 IDP_MGMT_CLIENT_SECRET=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
 TURN_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
+POSTGRES_USER="netbird"
+POSTGRES_DB="netbird"
 
 # Set endpoints based on configuration
 if [[ "${BEHIND_PROXY}" == "true" ]]; then
