@@ -76,7 +76,7 @@ Créez le fichier `deploy-netbird.yml` :
   hosts: netbird_servers
   become: yes
   vars:
-    script_url: "https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/main/install-netbird.sh"
+    script_url: "https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/master/install-netbird.sh"
     install_script: "/tmp/install-netbird.sh"
 
   tasks:

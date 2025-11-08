@@ -43,14 +43,14 @@ Netbird est une solution VPN moderne basée sur WireGuard qui permet de créer d
 ### Installation de test (localhost)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/main/install-netbird.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/master/install-netbird.sh | sudo bash
 ```
 
 ### Installation personnalisée
 
 ```bash
 # Télécharger le script
-curl -fsSL -O https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/main/install-netbird.sh
+curl -fsSL -O https://raw.githubusercontent.com/tiagomatiastm-prog/netbird-installer/master/install-netbird.sh
 chmod +x install-netbird.sh
 
 # Installation avec domaine personnalisé
